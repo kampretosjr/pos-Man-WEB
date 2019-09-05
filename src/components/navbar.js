@@ -29,11 +29,11 @@ export class Navbars extends Component {
                             <FontAwesomeIcon icon={faSearch} size="1x" className="ml-auto" />
                         </Navbar>
                     </Col>
-                    <Col md="3">
+                    {/* <Col md="3">
                         <Navbar color="faded" light className="shadow-sm" style={{ backgroundColor: 'white' }}>
                             <NavbarBrand className="m-auto">Cart <Badge style={{ backgroundColor: '#56cad5' }}>0</Badge></NavbarBrand>
                         </Navbar>
-                    </Col>
+                    </Col> */}
                 </Row>
             </div>
         );

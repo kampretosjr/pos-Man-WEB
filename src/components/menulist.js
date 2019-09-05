@@ -62,7 +62,7 @@ export class Menulist extends Component {
                                     return (
                                         <Col data-toggle="tooltip" data-placement="top" title={item.id_item} md="4" key={key}>
                                         
-                                            <Card className="mt-1 mb-auto" style={{ backgroundColor: 'transparent', borderColor: 'transparent', cursor: 'pointer' }}>
+                                            <Card onClick={() => this.props.addCart(item)} className="mt-1 mb-auto" style={{ backgroundColor: 'transparent', borderColor: 'transparent', cursor: 'pointer' }}>
                                                 <CardImg top width="100%" height="170" src={item.item_image} alt="Card image cap" />
                                                 <CardBody>
                                                     <h4>{item.category_name}</h4>
