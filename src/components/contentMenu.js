@@ -39,15 +39,17 @@ export class Content extends Component {
     //     this.setState({
     //       cart: this.state.stateCart
     //     })
-    this.state.stateCart[id].quantity += 1
       console.log('array', this.state.stateCart[id])
       //  console.log('cart', this.state.stateCart.indexOf(item)) 
+      this.setState({
+        cart: this.state.stateCart[id].quantity += 1
+      })
       }
 
-      decrement(harga) {
-          this.setState({
-              qty: this.state.qty - 1
-          })
+      decrement(item) {
+        var id = this.state.stateCart.indexOf(item)
+        this.state.stateCart[id].quantity -= 1
+         
       }
 
       nambahKeranjang = (item) => {
@@ -171,7 +173,7 @@ export class Content extends Component {
 																					<Row>
 																						<Col>
 																							<Button outline color="success" onClick={() => this.decrement(item)}>-</Button>
-                                              <Button outline color="success" >{this.state.qty}</Button>
+                                              <Button outline color="success" >{item.quantity}</Button>
                                               <Button outline color="success" onClick={() => this.increment(item)}>+</Button>
 																						</Col>
 																					</Row>
