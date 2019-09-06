@@ -69,8 +69,8 @@ export class Formadd extends React.Component {
 							title: 'Menu',
 							text: 'Berhasil di tambah!',
 						}).then(function(){ 
-							window.location.reload();
-							}
+                        window.location.reload();
+                            }
 						);
 						
 				})

@@ -36,7 +36,7 @@ export class Content extends Component {
         this.setState({
           cart: this.state.stateCart[id].quantity += 1,
           qty: this.state.qty += 1,
-          allPrice:item.price * this.state.qty
+          allPrice: (this.state.allPrice - (item.price * (item.quantity - 1 ))) + (item.price * item.quantity)
         })
       }
 
@@ -45,7 +45,7 @@ export class Content extends Component {
         this.setState({
           cart: this.state.stateCart[id].quantity -= 1,
           qty: this.state.qty -= 1,
-          allPrice:item.price * this.state.qty
+          allPrice:(this.state.allPrice - item.price)
         })
       }
 
@@ -271,8 +271,19 @@ console.log('stateCart', stateCart)
                 <div class="modal fade" ref={el => (this.componentRef = el)} id="myModal" role="dialog">
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
+                    
                       <div class="modal-header">
-                      <Row style={{ padding: 20 }}>
+                      <table  style={{width:'100%',border:1}}>
+                        <tr>
+                          <th>Receipt</th>
+                          <th style={{textAlign:'right'}}>No #{receiptNo}</th>
+                        </tr>
+                        <tr>
+                          <th>Cashier :</th>
+                          <th style={{textAlign:'right'}}>{dataStorage.username}</th>
+                        </tr>
+                      </table>
+                      {/* <Row style={{ padding: 20 }}>
                                 <Col>
                                     <h5>Receipt</h5>
                                     <h6>Cashier : {dataStorage.username}</h6>
@@ -280,50 +291,38 @@ console.log('stateCart', stateCart)
                                 <Col md={{ size: 5, offset: 16 }}>
                                     <h5>Receipt No #{receiptNo}</h5>
                                 </Col>
-                            </Row>
+                            </Row> */}
                       </div>
                       <div class="modal-body">
-                      {
-                          stateCart.map((item, index) => {
+                      <table  style={{width:'100%',border:1}}>
+
+                        {  stateCart.map((item, index) => {
                             return (
                               <>
-                                <Row style={{ marginLeft: 20 }}>
-                                  <Col md={{ size: 3 }}>
-                                    <h6>{item.item_name}</h6>
-                                  </Col>
-                                  <Col md={{ size: 1 }}>
-                                    <h6>{item.quantity} x</h6>
-                                  </Col>
-                                  <Col md={{ size: 4, offset: 9 }}>
-                                    <h6>Rp. {item.price * item.quantity}</h6>
-                                  </Col>
-                                </Row>
+                                <tr>
+                                  <td style={{textAlign:'left'}}>{item.item_name}</td>
+                                  <td style={{textAlign:'center'}}>{item.quantity} x</td>
+                                  <td style={{textAlign:'right'}}>Rp. {item.price * item.quantity}</td>
+                                </tr>
                               </>
                             )
                           })
                         }
-                          <Row style={{ marginLeft: 20 }}>
-                              <Col md={{ size: 5 }}>
-                                  <h6>Ppn 10%</h6>
-                              </Col>
-                              <Col md={{ size: 4, offset: 9 }}>
-                                  <h6>Rp. {allPrice/100*10}</h6>
-                              </Col>
-                          </Row>
-                          <Row style={{ marginLeft: -10 }}>
-                              <Col md={{ size: 5, offset: 9 }}>
-                                  <h6>Total : Rp. {allPrice+(allPrice/100*10)}</h6>
-                              </Col>
-                          </Row>
-                          <Row>
-                              <Col md={{ offset: 1 }}>
-                              <h6>Payment : Cash</h6>
-                              </Col>
-                          </Row>
+                        <br/>
+                        <tr>
+                          <td colspan='2' style={{textAlign:'left'}}>Ppn 10%</td>
+                          <td colspan='2' style={{textAlign:'right'}}>Rp. {allPrice/100*10}</td>
+                        </tr>
+                        <tr>
+                          <td colspan='2' style={{textAlign:'left'}}>Payment : Cash</td>
+                          <td colspan='2' style={{textAlign:'right'}}>Total : Rp. {allPrice+(allPrice/100*10)}</td>
+                        </tr>
+                          
+                        </table>
                       </div>
                       <div class="modal-footer">
                         <Row style={{paddingLeft: 40, paddingRight:40, justifyContent: 'center', alignItems: 'center', marginBottom: 20}}>
-                          <Button style={{ background: "#F24F8A", borderWidth: '0' }} onClick={() => insertList()} block>bayar</Button>{' '}
+                          <Button style={{ background: "#F24F8A", borderWidth: '0',textAlign:'center' }} onClick={() => insertList()} block>bayar</Button>{' '}
                           <h6 >Or</h6>
                           <ReactToPrint
                   trigger={() => <Button style={{ background: "#57CAD5", borderWidth: '0' }} onClick={this.toggle} block>print</Button>}
