@@ -40,10 +40,9 @@
 ## Screenshoot
 
 <div align="center">
-    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/login.png">    
-    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/loged%20in%20mode.png">
-    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/loan%20summary.png">
-    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/Screenshot%20from%202019-08-31%2016-16-36.png" > 
+  <img width="250" src="./screenshot/chart modal.png">    
+  <img width="250" src="./screenshot/pos menu.png">
+  <img width="250" src="./screenshot/pos riwayat.png">
 </div>
 
 ## Contributors
