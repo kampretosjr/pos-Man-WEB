@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Nav, NavItem, NavLink, Card, CardBody, CardTitle, CardSubtitle, Button, Modal, ModalBody, Row, Col ,Navbar,NavbarBrand,Badge} from 'reactstrap'
 import Modaladd from './modaladd';
-import ModalReciept from './modalReciept';
+import ReactToPrint from 'react-to-print';
 import Menulist from './menulist';
 import { Link } from 'react-router-dom'
 import {logoutUser} from '../redux/actions/user';
@@ -57,8 +57,18 @@ export class Content extends Component {
           cart.splice(index, 1)
         }
         this.setState({
-          cart: this.state.stateCart
+          cart: cart
         })
+      }
+
+      cancel = () => {
+
+        cart.splice(0,[cart.length])
+
+        this.setState({
+          stateCart:cart
+        })
+
       }
 
 		LogoutHandler = async (id) =>{
@@ -102,7 +112,7 @@ export class Content extends Component {
     render() {
       let receiptNo = Math.floor((Math.random() * 1000000000) + 1)
       const { stateCart ,qty,allPrice,total} = this.state
-
+console.log('stateCart', stateCart)
         const insertList = async ()=>{
           stateCart.map((item, key) => {
             return (
@@ -153,7 +163,7 @@ export class Content extends Component {
                 <Row>
                     <Col md="1">
                         <Nav vertical className="shadow-sm bg-white rounded" style={{height:'100'}} >
-												<Link data-toggle="tooltip" data-placement="right" title="List menu" to="/">
+												  <Link data-toggle="tooltip" data-placement="right" title="List menu" to="/">
                             <a className="nav-link">
                               <img src={require("../assets/images/fork.png")} style={{ width: 30, height: 30 }} alt="menu" />
                             </a>
@@ -172,9 +182,13 @@ export class Content extends Component {
                         </Nav>
                     </Col>
                     <Col md="8">
+                      
                         <Container style={{ marginTop: "5%" }}>
-                            <Menulist addCart={(item) => { this.nambahKeranjang(item) }} />
+                          <Menulist addCart={(item) => { this.nambahKeranjang(item) }} />
+                         
+                          
                         </Container>
+
                     </Col>
                     <Col md="3">
                         <Nav vertical className="shadow-sm bg-white full-height">
@@ -232,7 +246,7 @@ export class Content extends Component {
                                 <Col><Button data-toggle="modal" data-target="#myModal" color="success" style={{ width: '100%' }}>Checkout</Button></Col>
                               </Row>
                               <Row style={{ marginTop: 20 }}>
-                                <Col><Button color="secondary" style={{ width: '100%' }}>Cancel</Button></Col>
+                                <Col><Button color="secondary" onClick={() => this.cancel()} style={{ width: '100%' }}>Cancel</Button></Col>
                               </Row>
                             </center>
 													</NavItem>
@@ -254,7 +268,7 @@ export class Content extends Component {
                 </div>
                 <div>
 {/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
-                <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal fade" ref={el => (this.componentRef = el)} id="myModal" role="dialog">
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -309,9 +323,13 @@ export class Content extends Component {
                       </div>
                       <div class="modal-footer">
                         <Row style={{paddingLeft: 40, paddingRight:40, justifyContent: 'center', alignItems: 'center', marginBottom: 20}}>
-                          <Button style={{ background: "#F24F8A", borderWidth: '0' }} onClick={() => insertList()} block>Print</Button>{' '}
+                          <Button style={{ background: "#F24F8A", borderWidth: '0' }} onClick={() => insertList()} block>bayar</Button>{' '}
                           <h6 >Or</h6>
-                          <Button style={{ background: "#57CAD5", borderWidth: '0' }} onClick={this.toggle} block>Send Email</Button>
+                          <ReactToPrint
+                  trigger={() => <Button style={{ background: "#57CAD5", borderWidth: '0' }} onClick={this.toggle} block>print</Button>}
+                  content={() => this.componentRef}
+                />
+                          
                         </Row>
                       </div>
                     </div>
