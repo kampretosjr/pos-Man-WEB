@@ -51,22 +51,18 @@ export class Menulist extends Component {
         return (
             <div>
                 <Row>
-                    {
-                        isLoading ?
-                            <Spinner color="success" className="m-auto mt-5" />
-                            :
-                            menus &&
-                                menus.length > 0 ?
+                    {   isLoading ?
+                            <Spinner color="success" className="m-auto mt-5" /> :
+                            menus && menus.length > 0 ?
                                 menus.map((item, key) => {
 
                                     return (
                                         <Col data-toggle="tooltip" data-placement="top" title={item.id_item} md="4" key={key}>
-                                        
                                             <Card onClick={() => this.props.addCart(item)} className="mt-1 mb-auto" style={{ backgroundColor: 'transparent', borderColor: 'transparent', cursor: 'pointer' }}>
                                                 <CardImg top width="100%" height="170" src={item.item_image} alt="Card image cap" />
                                                 <CardBody>
-                                                    <h4>{item.category_name}</h4>
-                                                    <h6>{item.item_name}</h6>
+                                                    <h4>{item.item_name}</h4>
+                                                    <h6>{item.category_name}</h6>
                                                     <CardSubtitle style={{ fontWeight: 'bold' }}>Rp. {item.price}</CardSubtitle>
                                                 </CardBody>
                                             </Card>
@@ -79,7 +75,12 @@ export class Menulist extends Component {
                 </Row>
 
             </div>
-        );
+        )
+
+        
+
+
+
     }
 };
 

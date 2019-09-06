@@ -87,9 +87,9 @@ export class Formadd extends React.Component {
     render() {
         const { listCategory, name, image, price, id_category } = this.state
         let formdata = new FormData
-        formdata.append('item_name', name)
-        formdata.append('item_image', image)
-        formdata.append('price', price)
+                formdata.append('item_name', name)
+                formdata.append('item_image', image)
+                formdata.append('price', price)
 				formdata.append('id_category', id_category)
 				console.log("id_category",this.state.id_category)
         return (

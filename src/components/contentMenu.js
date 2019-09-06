@@ -1,55 +1,52 @@
 import React, { Component } from 'react';
-import { Row, Col, Container, Nav, NavItem, NavLink, Card, CardBody, CardTitle, CardSubtitle, Button ,Navbar,NavbarBrand,Badge} from 'reactstrap'
+import { Container, Nav, NavItem, NavLink, Card, CardBody, CardTitle, CardSubtitle, Button, Modal, ModalBody, Row, Col ,Navbar,NavbarBrand,Badge} from 'reactstrap'
 import Modaladd from './modaladd';
+import ModalReciept from './modalReciept';
 import Menulist from './menulist';
 import { Link } from 'react-router-dom'
 import {logoutUser} from '../redux/actions/user';
 import Swal from 'sweetalert2'
 import {connect} from 'react-redux';
+import '../assets/css/modalChart.css';
+import { postHistory } from '../redux/actions/history';
 
 var cart = []
 const dataStorage = JSON.parse(localStorage.getItem("data")) || ""  
 
 export class Content extends Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            modal: false,
-            stateCart:cart,
-            qty:1,
-            total:0
-        };
-        this.toggle = this.toggle.bind(this);
-        this.nambahKeranjang = this.nambahKeranjang.bind(this)
+      super(props);
+      this.state = {
+        modal: false,
+        stateCart:cart,
+        qty:0,
+        total:0,
+        allPrice:0,
+        allItem:[],
+        historyPush:[]
+
+      };
+      this.toggle = this.toggle.bind(this);
+      this.nambahKeranjang = this.nambahKeranjang.bind(this)
 
     }
     
-
 		increment(item) {     
-      
       var id = this.state.stateCart.indexOf(item)
-      
-     // this.state.stateCart[id]
-
-      //var itemTemp = cart.find(keranjang => keranjang.id_item === item.id_item)
-    //   var index = cart.indexOf(id)
-    //   if (index !== -1) {
-    //     cart[index].quantity = 1010;
-    // }
-    //     this.setState({
-    //       cart: this.state.stateCart
-    //     })
-      console.log('array', this.state.stateCart[id])
-      //  console.log('cart', this.state.stateCart.indexOf(item)) 
-      this.setState({
-        cart: this.state.stateCart[id].quantity += 1
-      })
+        this.setState({
+          cart: this.state.stateCart[id].quantity += 1,
+          qty: this.state.qty += 1,
+          allPrice:item.price * this.state.qty
+        })
       }
 
       decrement(item) {
         var id = this.state.stateCart.indexOf(item)
-        this.state.stateCart[id].quantity -= 1
-         
+        this.setState({
+          cart: this.state.stateCart[id].quantity -= 1,
+          qty: this.state.qty -= 1,
+          allPrice:item.price * this.state.qty
+        })
       }
 
       nambahKeranjang = (item) => {
@@ -59,23 +56,9 @@ export class Content extends Component {
         } else {
           cart.splice(index, 1)
         }
-
         this.setState({
           cart: this.state.stateCart
         })
-      }
-
-      clicked = (param) => {
-        let index = this.state.cart.indexOf(param)
-        if (index === -1) {
-          this.state.cartDetail.push({ jumlah: 1 })
-          this.state.cart.push(param)
-        } else {
-          this.state.cart.splice(index, 1)
-          this.state.cartDetail.splice(index, 1)
-        }
-        this.setState({ cart: this.state.cart })
-        console.log(param, index, this.state);
       }
 
 		LogoutHandler = async (id) =>{
@@ -100,30 +83,73 @@ export class Content extends Component {
 			})
 		}
 
+    PushHistory = async (formdata) =>{
+      this.state.stateCart.map((item, key) => {
+        return (
+          this.state.allItem.push(item.quantity + 'x ' + item.item_name)
+        )})
+      console.log('formdata', formdata)
+
+
+    
+    }
+
     toggle() {
         this.setState(prevState => ({
             modal: !prevState.modal
         }));
     }
     render() {
-      const { stateCart } = this.state
-    //   console.log("cart",cart.map((item, key) => {
-    //     return (
-    //       item
-    //     )
-    // })  )
-    console.log('data', this.state.stateCart)
+      let receiptNo = Math.floor((Math.random() * 1000000000) + 1)
+      const { stateCart ,qty,allPrice,total} = this.state
+
+        const insertList = async ()=>{
+          stateCart.map((item, key) => {
+            return (
+              this.state.allItem.push(item.quantity + 'x ' + item.item_name)
+            )})
+// console.log('item', this.state.allItem.join(", "),)
+          this.state.historyPush.push({
+            item_list:this.state.allItem.join(", "),
+            id_kasir:dataStorage.id_user,
+            transaksi:this.state.allPrice,
+            no_reciept:Math.floor((Math.random() * 1000000000) + 1) 
+          })
+    
+        //   const data = this.state.historyPush
+        //   console.log('data', data)
+          this.props.dispatch(postHistory(this.state.historyPush))
+            .then(() => {
+            Swal.fire({
+              type: 'success',
+              title: 'Menu',
+              text: 'Berhasil di tambah!',
+            }).then(function(){ 
+              window.location.reload();
+              }
+            );
+        })
+        .catch((error) => {
+          console.log(error)
+            Swal.fire({	
+              type: 'error',
+              title: 'Add Menu',
+              text: 'Failed To Add Menu'
+            })
+          })
+        }
         return (
+
           <>
           <Row>
 
           <Col style={{left:'74%',marginTop:'-4%',paddingBottom:'5%'}} md="3">
             <Navbar color="faded" light className="shadow-sm" style={{ backgroundColor: 'white' }}>
-              <NavbarBrand className="m-auto">Cart <Badge style={{ backgroundColor: '#56cad5' }}>{this.state.stateCart.length}</Badge></NavbarBrand>
+              <NavbarBrand className="m-auto">Cart <Badge style={{ backgroundColor: '#56cad5' }}>{qty}</Badge></NavbarBrand>
             </Navbar>
           </Col>
           </Row>
-            <Container class="py-2 sticky-top flex-grow-1" fluid>
+            <div class="container-fluid">
                 <Row>
                     <Col md="1">
                         <Nav vertical className="shadow-sm bg-white rounded" style={{height:'100'}} >
@@ -172,7 +198,10 @@ export class Content extends Component {
 																					</Row>
 																					<Row>
 																						<Col>
-																							<Button outline color="success" onClick={() => this.decrement(item)}>-</Button>
+                                            {item.quantity <= 0 ? 
+                                              <Button disabled outline color="success" onClick={() => this.decrement(item)}>-</Button>
+                                            : <Button  outline color="success" onClick={() => this.decrement(item)}>-</Button>
+                                            }
                                               <Button outline color="success" >{item.quantity}</Button>
                                               <Button outline color="success" onClick={() => this.increment(item)}>+</Button>
 																						</Col>
@@ -184,7 +213,7 @@ export class Content extends Component {
 																						<Col></Col>
 																					</Row>
 																					<Row>
-																						<Col><CardSubtitle style={{ fontSize: 12 }}>{item.price * this.state.qty}</CardSubtitle></Col>
+																						<Col><CardSubtitle style={{ fontSize: 12 }}>{item.price * item.quantity}</CardSubtitle></Col>
 																					</Row>
 																				</Col>
 
@@ -193,39 +222,109 @@ export class Content extends Component {
 																	</Card>
 																)
 														})}
-															<center>
-                                <Row style={{ marginTop: 20 }}>
-																	<Col><Button color="warning" style={{ width: '100%' }}>total</Button></Col>
-																</Row>  
-																<Row style={{ marginTop: 20 }}>
-																	<Col><Button color="danger" style={{ width: '100%' }}>Checkout</Button></Col>
-																</Row>
-																<Row style={{ marginTop: 20 }}>
-																	<Col><Button color="secondary" style={{ width: '100%' }}>Cancel</Button></Col>
-																</Row>
-															</center>
+
+
+                            <center>
+                              <Row style={{ marginTop: 20 }}>
+                                <Col><Button disabled color="warning" style={{ width: '100%' }}>total {qty} item : harga {allPrice} </Button></Col>
+                              </Row>  
+                              <Row style={{ marginTop: 20 }}>
+                                <Col><Button data-toggle="modal" data-target="#myModal" color="success" style={{ width: '100%' }}>Checkout</Button></Col>
+                              </Row>
+                              <Row style={{ marginTop: 20 }}>
+                                <Col><Button color="secondary" style={{ width: '100%' }}>Cancel</Button></Col>
+                              </Row>
+                            </center>
 													</NavItem>
                                     :
-                                    <NavItem>
-                                        <center>
-                                            <img src={require('../assets/images/food-and-restaurant.png')} alt="empty cart" />
-                                        </center>
-                                        <div style={{ textAlign: 'center' }}>
-                                            <h6>Your cart is empty</h6>
-                                            <p style={{ color: '#CECECE' }}>Please add some items from the menu</p>
-                                        </div>
-                                    </NavItem>
+                          <NavItem>
+                            <center>
+                              <img src={require('../assets/images/food-and-restaurant.png')} alt="empty cart" />
+                            </center>
+                            <div style={{ textAlign: 'center' }}>
+                              <h6>Your cart is empty</h6>
+                              <p style={{ color: '#CECECE' }}>Please add some items from the menu</p>
+                            </div>
+                          </NavItem>
                             }
                         </Nav>
                     </Col>
                 </Row>
                 <Modaladd toggle={this.toggle} modal={this.state.modal} />
-            </Container>
+                </div>
+                <div>
+{/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
+                <div class="modal fade" id="myModal" role="dialog">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                      <Row style={{ padding: 20 }}>
+                                <Col>
+                                    <h5>Receipt</h5>
+                                    <h6>Cashier : {dataStorage.username}</h6>
+                                </Col>
+                                <Col md={{ size: 5, offset: 16 }}>
+                                    <h5>Receipt No #{receiptNo}</h5>
+                                </Col>
+                            </Row>
+                      </div>
+                      <div class="modal-body">
+                      {
+                          stateCart.map((item, index) => {
+                            return (
+                              <>
+                                <Row style={{ marginLeft: 20 }}>
+                                  <Col md={{ size: 3 }}>
+                                    <h6>{item.item_name}</h6>
+                                  </Col>
+                                  <Col md={{ size: 1 }}>
+                                    <h6>{item.quantity} x</h6>
+                                  </Col>
+                                  <Col md={{ size: 4, offset: 9 }}>
+                                    <h6>Rp. {item.price * item.quantity}</h6>
+                                  </Col>
+                                </Row>
+                              </>
+                            )
+                          })
+                        }
+                          <Row style={{ marginLeft: 20 }}>
+                              <Col md={{ size: 5 }}>
+                                  <h6>Ppn 10%</h6>
+                              </Col>
+                              <Col md={{ size: 4, offset: 9 }}>
+                                  <h6>Rp. {allPrice/100*10}</h6>
+                              </Col>
+                          </Row>
+                          <Row style={{ marginLeft: -10 }}>
+                              <Col md={{ size: 5, offset: 9 }}>
+                                  <h6>Total : Rp. {allPrice+(allPrice/100*10)}</h6>
+                              </Col>
+                          </Row>
+                          <Row>
+                              <Col md={{ offset: 1 }}>
+                              <h6>Payment : Cash</h6>
+                              </Col>
+                          </Row>
+                      </div>
+                      <div class="modal-footer">
+                        <Row style={{paddingLeft: 40, paddingRight:40, justifyContent: 'center', alignItems: 'center', marginBottom: 20}}>
+                          <Button style={{ background: "#F24F8A", borderWidth: '0' }} onClick={() => insertList()} block>Print</Button>{' '}
+                          <h6 >Or</h6>
+                          <Button style={{ background: "#57CAD5", borderWidth: '0' }} onClick={this.toggle} block>Send Email</Button>
+                        </Row>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      </div>      
+            
+
+
             </>
         );
     }
 }
-
 const mapStateToProps = state => {
   return {
     history: state.reHistory.historyList,

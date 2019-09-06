@@ -1,3 +1,3 @@
-const api = 'http://localhost:5000'
+const api = 'https://posboy.herokuapp.com'
 
 export default api

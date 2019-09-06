@@ -7,3 +7,9 @@ export const getAllHistory = () => {
         payload: Axios.get(`${linknya}/history/`)
     }
 }
+export const postHistory = (data) => {
+    return {
+        type: 'ADD_HISTORY',
+        payload: Axios.post(`${linknya}/history/`, data[0])
+    }
+}
