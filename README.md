@@ -1,68 +1,63 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Point of Sales Web app
+#### Build with 
+<p align="center">
+  <a href="https://nodejs.org/">
+    <img src="https://i1.wp.com/www.davideguida.com/wp-content/uploads/2016/09/react-node.png">
+  </a>
+</p>
 
-## Available Scripts
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Usage](#usage-for-development)
+- [Contributors](#contributors)
+- [Screenshoot](#screenshoot)
 
-In the project directory, you can run:
+## Introduction
+  This is a web application to create transaction history to keep an eye on your income from sales
 
-### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Features
+* users can add custom item to menu with foto 
+* users can increase or decrease quantity to custom item on chart
+* users can print chart detail with quantity and price ,to pdf
+* to access them all except users must logged in first
 
-### `npm test`
+## Requirements
+* [`npm`](https://www.npmjs.com/get-npm)
+* [`React Js`](https://react-cn.github.io/react/downloads.html) 
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Usage for development
+1. Clone this Repository
+2. Open the folder and type `npm install` for install dependencies
+3. And then ,type `npm start` for run this app.
 
-### `npm run build`
+## Release Web
+[![Netlify Status](https://api.netlify.com/api/v1/badges/85e33a03-d82a-4947-8b71-f38561c69149/deploy-status)](https://posboy.netlify.com/)
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Screenshoot
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+<div align="center">
+    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/login.png">    
+    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/loged%20in%20mode.png">
+    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/loan%20summary.png">
+    <img width="250" src="https://raw.githubusercontent.com/kampretosjr/library-frontend/master/screenshoot/Screenshot%20from%202019-08-31%2016-16-36.png" > 
+</div>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Contributors
+<center>
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/rizal271">
+          <img width="200" src="https://avatars0.githubusercontent.com/u/33866110?s=460&v=4" alt="Khadam ikhwanus shofa"><br/>
+          <sub><b>Khadam ikhwanus shofa</b></sub>
+        </a>
+      </td>
+    </tr>
+  </table>
+</center>
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+#
