@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Navbars from '../components/navbar';
+import {navbar} from '../components/navbar';
 import History from '../components/contentHistory';
 
 export class Home extends Component {
@@ -14,7 +14,7 @@ export class Home extends Component {
     render() {
         return (
             <div>
-                <Navbars title="riwayat transaksi" />
+                <navbar title="riwayat transaksi" />
                 <History />
             </div>
         );

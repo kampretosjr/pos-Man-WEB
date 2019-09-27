@@ -9,6 +9,7 @@ import Swal from 'sweetalert2'
 import {connect} from 'react-redux';
 import '../assets/css/modalChart.css';
 import { postHistory } from '../redux/actions/history';
+import { cartPlus, cartMinus,cartOperator } from '../redux/actions/cart';
 
 var cart = []
 const dataStorage = JSON.parse(localStorage.getItem("data")) || ""  
@@ -38,6 +39,7 @@ export class Content extends Component {
           qty: this.state.qty += 1,
           allPrice: (this.state.allPrice - (item.price * (item.quantity - 1 ))) + (item.price * item.quantity)
         })
+        this.props.dispatch(cartOperator("plus"))
       }
 
       decrement(item) {
@@ -47,6 +49,7 @@ export class Content extends Component {
           qty: this.state.qty -= 1,
           allPrice:(this.state.allPrice - item.price)
         })
+        this.props.dispatch(cartOperator("minus"))
       }
 
       nambahKeranjang = (item) => {
@@ -100,8 +103,6 @@ export class Content extends Component {
         )})
       console.log('formdata', formdata)
 
-
-    
     }
 
     toggle() {
@@ -154,9 +155,9 @@ console.log('stateCart', stateCart)
           <Row>
 
           <Col style={{left:'74%',marginTop:'-4%',paddingBottom:'5%'}} md="3">
-            <Navbar color="faded" light className="shadow-sm" style={{ backgroundColor: 'white' }}>
+            {/* <Navbar color="faded" light className="shadow-sm" style={{ backgroundColor: 'white' }}>
               <NavbarBrand className="m-auto">Cart <Badge style={{ backgroundColor: '#56cad5' }}>{qty}</Badge></NavbarBrand>
-            </Navbar>
+            </Navbar> */}
           </Col>
           </Row>
             <div class="container-fluid">
@@ -334,7 +335,7 @@ console.log('stateCart', stateCart)
                     </div>
                   </div>
                 </div>
-      </div>      
+              </div>      
             
 
 

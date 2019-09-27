@@ -1,43 +1,33 @@
-import React, { Component } from 'react';
-import { Navbar, NavbarToggler, NavbarBrand, Row, Col, Container, Badge } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
-export class Navbars extends Component {
-    constructor(props) {
-        super(props);
+export default function Navbar ({title}){
+	const counter = useSelector(state => state.reCart.CartCount)
+	
+  return (
+		<div class="container-fluid sticky-top">
+			<div class="row ">
 
-        this.toggleNavbar = this.toggleNavbar.bind(this);
-        this.state = {
-            collapsed: true
-        };
-    }
+				<div class="col-sm-9 border ">
+					<nav class="navbar navbar-light bg-white shadow p-3 mb-5 bg-white rounded"  >
+						<h5 class="col text-center font-weight-bold">{title}</h5>
+					</nav>
+				</div>
 
-    toggleNavbar() {
-        this.setState({
-            collapsed: !this.state.collapsed
-        });
-    }
-    render() {
-        return (
-            <div class="container-fluid sticky-top">
-                <Row>
-                    <Col md="9">
-                        <Navbar color="faded" light className="shadow-sm" style={{ backgroundColor: 'white' }} >
-                            <NavbarToggler onClick={this.toggleNavbar} className="mr-auto" />
-                            <NavbarBrand href="/" className="m-auto">{this.props.title}</NavbarBrand>
-                            <FontAwesomeIcon icon={faSearch} size="1x" className="ml-auto" />
-                        </Navbar>
-                    </Col>
-                    {/* <Col md="3">
-                        <Navbar color="faded" light className="shadow-sm" style={{ backgroundColor: 'white' }}>
-                            <NavbarBrand className="m-auto">Cart <Badge style={{ backgroundColor: '#56cad5' }}>0</Badge></NavbarBrand>
-                        </Navbar>
-                    </Col> */}
-                </Row>
-            </div>
-        );
-    }
+				<div class="col-sm-3 border">
+					<nav class="navbar navbar-light bg-white shadow p-3 mb-5 bg-white rounded"  >
+						<h5 class="col text-center font-weight-bold">
+							keranjang belanja 
+							<span class="badge badge-primary">{counter}</span>
+						</h5>
+					</nav>                        
+				</div>
+				
+			</div>
+		</div>
+	)
 }
 
-export default Navbars
+
+
+
