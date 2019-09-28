@@ -5,7 +5,7 @@ import Content from '../components/contentMenu';
 export class Home extends Component {
     render() {
         return (
-            <div>
+            <div class="container-fluid">
                 <Navbar title="Food List"/>
                 <Content />
             </div>

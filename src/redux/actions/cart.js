@@ -10,9 +10,9 @@ export const cartMinus = (data) => {
         data
     }
 }
-export const cartOperator = (data) => {
+export const cartQty = (data) => {
     return {
-        type: 'CART_OPERATOR',
+        type: 'CART_QUANTITY',
         data,
     }
 }
