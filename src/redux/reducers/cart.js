@@ -11,18 +11,23 @@ const initialState = {
 const users = (state = initialState, action) => {
 	switch (action.type) {
 		case 'CART_OPERATOR':
+			const {item} = action
+			let curentTotal 
+
 			return {
 				...state,
 				isLoading: false,
 				isFulfilled: true,
-				CartList: action.data,
+				CartList: item,
 			};
-		case 'CART_DEC':
+
+		case 'CART_PRICE':
+			console.log('action.harga :', action.harga);
 			return {
 				...state,
 				isLoading: false,
 				isFulfilled: true,
-				CartList: action.data,
+				TotalPrice: action.harga,
 			};
 		case 'CART_QUANTITY':
 			let data

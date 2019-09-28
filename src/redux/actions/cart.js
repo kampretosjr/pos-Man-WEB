@@ -1,13 +1,13 @@
-export const cartOperator = (data) => {
+export const cartOperator = (item) => {
     return {
         type: 'CART_OPERATOR',
-        data,
+        item,
     }
 }
-export const cartMinus = (data) => {
+export const cartTotalPrice = (harga) => {
     return {
-        type: 'CART_DEC',
-        data
+        type: 'CART_PRICE',
+        harga
     }
 }
 export const cartQty = (data) => {

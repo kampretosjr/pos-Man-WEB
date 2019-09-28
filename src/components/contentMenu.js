@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { Container, Nav, NavItem, NavLink, Card, CardBody, CardTitle, CardSubtitle, Button, Row, Col } from 'reactstrap'
-import Modaladd from './modaladd';
 import ReactToPrint from 'react-to-print';
 import Menulist from './menulist';
-import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux';
 import '../assets/css/modalChart.css';
 import { postHistory } from '../redux/actions/history';
-import { logoutUser } from '../redux/actions/user';
-import { cartPlus, cartMinus, cartQty } from '../redux/actions/cart';
+import { cartTotalPrice, cartOperator, cartQty } from '../redux/actions/cart';
 import Sidebar from "./sidebar";
 
 var cart = []
@@ -21,7 +18,6 @@ export class Content extends Component {
     this.state = {
       modal: false,
       stateCart: cart,
-      qty: 0,
       total: 0,
       allPrice: 0,
       allItem: [],
@@ -42,7 +38,6 @@ export class Content extends Component {
     var id = this.state.stateCart.indexOf(item)
     this.setState({
       cart: this.state.stateCart[id].quantity += 1,
-      qty: this.state.qty += 1,
       allPrice: (this.state.allPrice - (item.price * (item.quantity - 1))) + (item.price * item.quantity)
     })
     this.props.dispatch(cartQty(+1))
@@ -52,41 +47,42 @@ export class Content extends Component {
     var id = this.state.stateCart.indexOf(item)
     this.setState({
       cart: this.state.stateCart[id].quantity -= 1,
-      qty: this.state.qty -= 1,
       allPrice: (this.state.allPrice - item.price)
     })
     this.props.dispatch(cartQty(-1))
   }
 
-  nambahKeranjang = (item) => {
-    var id = this.state.stateCart.indexOf(item)
+  nambahKeranjang = async (item) => {
     let index = cart.indexOf(item)
     if (index === -1) {
       this.props.dispatch(cartQty(+1))
       cart.push(item)
       item.quantity = 1
+      await this.setState({
+        allPrice:(this.state.allPrice + (item.quantity * item.price) )
+      })
+
+      this.props.dispatch(cartTotalPrice(this.state.allPrice))
     } else {
-      console.log('item.quantity :', item.quantity);
       this.props.dispatch(cartQty(-item.quantity))
       cart.splice(index, 1)
+      await this.setState({
+        allPrice:(this.state.allPrice - (item.quantity * item.price) )
+      })
       item.quantity = 0
     }
-    this.setState({
-      allPrice: (this.state.allPrice - (item.price * (item.quantity - 1))) + (item.price * item.quantity),
-      qty: this.state.qty += 1,
-      cart: cart
-    })
+    console.log('all 1:', this.state.allPrice);
+    this.props.dispatch(cartTotalPrice(this.state.allPrice))
+    this.props.dispatch(cartOperator(cart))
   }
 
   cancel = () => {
-
     cart.splice(0, [cart.length])
     this.props.dispatch(cartQty(0))
 
     this.setState({
       allPrice: 0,
       stateCart: cart,
-      qty: 0
     })
 
   }
@@ -94,7 +90,7 @@ export class Content extends Component {
   render() {
     let receiptNo = Math.floor((Math.random() * 1000000000) + 1)
     const { stateCart, qty, allPrice, total } = this.state
-    console.log('stateCart', stateCart)
+    console.log('all 2:', this.state.allPrice);
     const insertList = async () => {
       stateCart.map((item, key) => {
         return (
@@ -135,18 +131,14 @@ export class Content extends Component {
         <div >
           <Row>
             <Sidebar />
-            
-            <div class="col-md-8" style={{ marginLeft: "8.25%" }}>
-              <Container >
-                <Menulist addCart={(item) => { this.nambahKeranjang(item) }} />
-              </Container>
-            </div>
-
+            <Menulist addCart={(item) => { this.nambahKeranjang(item) }} />
             <div class="col-md-3 "  >
               <Nav vertical className="shadow-sm bg-white full-height">
-                {stateCart && stateCart.length > 0 ?
+                {/* {stateCart && stateCart.length > 0 ? */}
+                {this.props.CartProps.CartList && this.props.CartProps.CartList.length > 0 ?
                   <NavItem >
-                    {stateCart.map((item, key) => {
+                    {/* {stateCart.map((item, key) => { */}
+                    {this.props.CartProps.CartList.map((item, key) => {
                       return (
                         <Card style={{ width: '100%', height: '100%', marginBottom: '2%' }} key={key}>
                           <CardBody>
@@ -181,7 +173,7 @@ export class Content extends Component {
                     })}
                     <center class="nav-item shadow p-3  rounded ">
                       <Row style={{ marginTop: 20 }}>
-                        <Col><Button disabled color="warning" style={{ width: '100%' }}>total {this.props.CartProps.CartQty} item : harga {allPrice} </Button></Col>
+                        <Col><Button disabled color="warning" style={{ width: '100%' }}>total : {this.props.CartProps.CartQty} item | harga : {this.props.CartProps.TotalPrice} </Button></Col>
                       </Row>
                       <Row style={{ marginTop: 20 }}>
                         <Col><Button data-toggle="modal" data-target="#myModal" color="success" style={{ width: '100%' }}>Checkout</Button></Col>
