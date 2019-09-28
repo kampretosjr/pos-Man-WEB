@@ -1,6 +1,6 @@
-export const cartPlus = (data) => {
+export const cartOperator = (data) => {
     return {
-        type: 'CART_INC',
+        type: 'CART_OPERATOR',
         data,
     }
 }

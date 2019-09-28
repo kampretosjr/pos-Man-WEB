@@ -10,6 +10,8 @@ import '../assets/css/modalChart.css';
 import { postHistory } from '../redux/actions/history';
 import { logoutUser } from '../redux/actions/user';
 import { cartPlus, cartMinus, cartQty } from '../redux/actions/cart';
+import Sidebar from "./sidebar";
+
 var cart = []
 const dataStorage = JSON.parse(localStorage.getItem("data")) || ""
 
@@ -26,9 +28,15 @@ export class Content extends Component {
       historyPush: []
 
     };
-    this.toggle = this.toggle.bind(this);
     this.nambahKeranjang = this.nambahKeranjang.bind(this)
   }
+
+  angkaRP(angka) {
+    var rupiah = '';
+    var angkarev = angka.toString().split('').reverse().join('');
+    for (var i = 0; i < angkarev.length; i++) if (i % 3 == 0) rupiah += angkarev.substr(i, 3) + '.';
+    return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('');
+  };
 
   increment(item) {
     var id = this.state.stateCart.indexOf(item)
@@ -78,38 +86,11 @@ export class Content extends Component {
     this.setState({
       allPrice: 0,
       stateCart: cart,
-      qty:0
+      qty: 0
     })
 
   }
 
-  LogoutHandler = async (id) => {
-    await this.props.dispatch(logoutUser(id))
-      .then(() => {
-        Swal.fire({
-          type: 'success',
-          title: 'Logout',
-          text: 'Logout Success!'
-        }).then(function () {
-          window.location.reload();
-        }
-        );
-      })
-      .catch((error) => {
-        console.log(error)
-        Swal.fire({
-          type: 'error',
-          title: 'Logout',
-          text: 'Logout Failed :('
-        })
-      })
-  }
-
-  toggle() {
-    this.setState(prevState => ({
-      modal: !prevState.modal
-    }));
-  }
   render() {
     let receiptNo = Math.floor((Math.random() * 1000000000) + 1)
     const { stateCart, qty, allPrice, total } = this.state
@@ -128,7 +109,7 @@ export class Content extends Component {
         no_reciept: Math.floor((Math.random() * 1000000000) + 1)
       })
 
-     
+
       this.props.dispatch(postHistory(this.state.historyPush))
         .then(() => {
           Swal.fire({
@@ -150,111 +131,54 @@ export class Content extends Component {
         })
     }
     return (
-
       <>
-
         <div >
           <Row>
-            <div class="col-md-1  " style={{position:"sticky" }}>
-              <ul class="nav flex-column navbar-light bg-white shadow p-3 mb-5 rounded " style={{ height:"100%"}} > 
-                <li data-toggle="tooltip"  title="add menu" onClick={this.toggle} >
-                  <a className="nav-link" >
-                    <img src={require("../assets/images/tambah.png")} style={{ width: "100%",  }} alt="menu" />
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <Link data-toggle="tooltip"  title="menu" to="/menu">
-                    <a className="nav-link" >
-                      <img src={require("../assets/images/fork.png")} style={{ width: "100%",  }} alt="menu" />
-                    </a>
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link data-toggle="tooltip"  title="History" to="/history">
-                    <a className="nav-link">
-                      <img src={require("../assets/images/clipboard.png")} style={{ width: "100%",  }} alt="menu" />
-                    </a>
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link data-toggle="tooltip"  title="Log out" onClick={() => this.LogoutHandler(dataStorage.id_user)}>
-                    <a className="nav-link">
-                      <img src={require("../assets/images/signout.png")} style={{ width: "100%",  }} alt="add menu" />
-                    </a>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div class="col-md-8  ">
+            <Sidebar />
+            
+            <div class="col-md-8" style={{ marginLeft: "8.25%" }}>
               <Container >
                 <Menulist addCart={(item) => { this.nambahKeranjang(item) }} />
               </Container>
             </div>
 
-            <div class="col-md-3  " >
+            <div class="col-md-3 "  >
               <Nav vertical className="shadow-sm bg-white full-height">
                 {stateCart && stateCart.length > 0 ?
-                  <NavItem>
+                  <NavItem >
                     {stateCart.map((item, key) => {
                       return (
                         <Card style={{ width: '100%', height: '100%', marginBottom: '2%' }} key={key}>
                           <CardBody>
-                          <table style={{ width: '100%', height: '100%', marginBottom: '2%' }} >
-                            <tr>
-                              <td align="center" rowspan="2">
-                                <img src={item.item_image} alt={item.item_image} style={{ width: 100}} />
-                              </td>
-                              <td>
-                                <CardTitle style={{ textAlign: 'center' }}>{item.item_name}</CardTitle>
-                              </td>
-                              <td ><CardSubtitle style={{ fontSize: 12,textAlign: 'center' }}>{item.price * item.quantity}</CardSubtitle></td>
-                            </tr>
-                            <tr>
-                              <td align="center" colspan="2">
-                                    {item.quantity <= 1 ?
-                                      <Button disabled outline color="success" onClick={() => this.decrement(item)}>-</Button>
-                                      : <Button outline color="success" onClick={() => this.decrement(item)}>-</Button>
-                                    }
-                                    <Button outline color="danger" disabled style={{ margin:"5%" }} >{item.quantity}</Button>
-                                    <Button outline color="success"  onClick={() => this.increment(item)}>+</Button>
-                              </td>
-                            </tr>
-                          </table>
+                            <table style={{ width: '100%', height: '100%', marginBottom: '2%' }} >
+                              <tr>
+                                <td align="center" rowspan="2">
+                                  <img src={item.item_image} alt={item.item_image} style={{ width: 100 }} />
+                                </td>
+                                <td>
+                                  <CardTitle style={{ textAlign: 'center' }}>{item.item_name}</CardTitle>
+                                </td>
+                                <td >
+                                  <CardTitle style={{ fontSize: 12, textAlign: 'center' }}>
+                                    {this.angkaRP(item.price * item.quantity)}
+                                  </CardTitle>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td align="center" colspan="2">
+                                  {item.quantity <= 1 ?
+                                    <Button disabled outline color="success" onClick={() => this.decrement(item)}>-</Button>
+                                    : <Button outline color="success" onClick={() => this.decrement(item)}>-</Button>
+                                  }
+                                  <Button outline color="danger" disabled style={{ margin: "5%" }} >{item.quantity}</Button>
+                                  <Button outline color="success" onClick={() => this.increment(item)}>+</Button>
+                                </td>
+                              </tr>
+                            </table>
                           </CardBody>
-                          {/* <CardBody>
-                            <Row>
-                              <Col md="2">
-                                <img src={item.item_image} alt={item.item_image} style={{ width: "200%",  }} />
-                              </Col>
-
-                              <Col md="7" >
-                                <Row>
-                                  <Col>
-                                    <CardTitle>{item.item_name}</CardTitle>
-                                  </Col>
-                                  <Col><CardSubtitle style={{ fontSize: 12 }}>{item.price * item.quantity}</CardSubtitle></Col>
-
-                                </Row>
-                                
-                                <Row>
-                                  <Col>
-                                    {item.quantity <= 1 ?
-                                      <Button disabled outline color="success" onClick={() => this.decrement(item)}>-</Button>
-                                      : <Button outline color="success" onClick={() => this.decrement(item)}>-</Button>
-                                    }
-                                    <Button outline color="danger" disabled style={{ margin:"5%" }} >{item.quantity}</Button>
-                                    <Button outline color="success" onClick={() => this.increment(item)}>+</Button>
-                                  </Col>
-                                </Row>
-                              </Col>
-                            </Row>
-                          </CardBody> */}
                         </Card>
                       )
                     })}
-
-
                     <center class="nav-item shadow p-3  rounded ">
                       <Row style={{ marginTop: 20 }}>
                         <Col><Button disabled color="warning" style={{ width: '100%' }}>total {this.props.CartProps.CartQty} item : harga {allPrice} </Button></Col>
@@ -280,11 +204,11 @@ export class Content extends Component {
                 }
               </Nav>
             </div>
+
           </Row>
-          <Modaladd toggle={this.toggle} modal={this.state.modal} />
         </div>
         <div>
-          {/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
+          {/* //////////modal//////////////////////////////////////////////////////////////// */}
           <div class="modal fade" ref={el => (this.componentRef = el)} id="myModal" role="dialog">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
@@ -303,7 +227,6 @@ export class Content extends Component {
                 </div>
                 <div class="modal-body">
                   <table style={{ width: '100%', border: 1 }}>
-
                     {stateCart.map((item, index) => {
                       return (
                         <>

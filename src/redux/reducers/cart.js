@@ -10,8 +10,7 @@ const initialState = {
 
 const users = (state = initialState, action) => {
 	switch (action.type) {
-
-		case 'CART_INC':
+		case 'CART_OPERATOR':
 			return {
 				...state,
 				isLoading: false,
@@ -27,7 +26,7 @@ const users = (state = initialState, action) => {
 			};
 		case 'CART_QUANTITY':
 			let data
-			action.data == 0 ? data = 0 :data = (state.CartQty) + action.data
+			action.data == 0 ? data = 0 : data = (state.CartQty) + action.data
 			return {
 				...state,
 				isLoading: false,

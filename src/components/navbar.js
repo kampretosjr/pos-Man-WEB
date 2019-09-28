@@ -17,7 +17,7 @@ export default function Navbar ({title}){
 				<div class="col-md-3 ">
 					<nav class="navbar navbar-light bg-white shadow p-3 mb-5 bg-white rounded"  >
 						<h5 class="col text-center font-weight-bold">
-							item <span class="badge badge-primary"> {counter}</span>
+							jumlah item <span class="badge badge-primary"> {counter}</span>
 						</h5>
 					</nav>                        
 				</div>

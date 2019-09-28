@@ -13,7 +13,7 @@ export class Home extends Component {
     
     render() {
         return (
-            <div>
+            <div class="container-fluid">
                 <Navbar title="riwayat transaksi" />
                 <History />
             </div>

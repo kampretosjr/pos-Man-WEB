@@ -6,7 +6,7 @@ export class Home extends Component {
     render() {
         return (
             <div class="container-fluid">
-                <Navbar title="Food List"/>
+                <Navbar title="Food and beverage"/>
                 <Content />
             </div>
         );
