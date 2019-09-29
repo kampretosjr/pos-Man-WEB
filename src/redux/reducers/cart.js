@@ -11,15 +11,23 @@ const initialState = {
 const users = (state = initialState, action) => {
 	switch (action.type) {
 		case 'CART_OPERATOR':
-			const {item} = action
-			let curentTotal 
-
-			return {
+			let tempItem
+			if (action.item == "cancel") {
+				state.CartList.splice(0, [state.CartList.length])
+				return {
+					...state,
+					isLoading: false,
+					isFulfilled: true,
+				};
+			} else {
+				return {
 				...state,
 				isLoading: false,
 				isFulfilled: true,
-				CartList: item,
+				CartList: action.item,
 			};
+			}
+			
 
 		case 'CART_PRICE':
 			console.log('action.harga :', action.harga);
@@ -37,6 +45,13 @@ const users = (state = initialState, action) => {
 				isLoading: false,
 				isFulfilled: true,
 				CartQty: data
+			};
+		case 'CART_INTERNAL':
+			action.value == "inc" ? state.CartList[action.id].quantity += 1 : state.CartList[action.id].quantity -= 1
+			return {
+				...state,
+				isLoading: false,
+				isFulfilled: true,
 			};
 		default:
 			return state;

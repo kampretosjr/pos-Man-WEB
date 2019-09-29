@@ -8,7 +8,7 @@ import { Row, Col, Container, Nav, NavItem, NavLink } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import Sidebar from "./sidebar";
-
+import Rightbar from './rightbar';
 
 const dataStorage = JSON.parse(localStorage.getItem("data")) || ""
 
@@ -62,19 +62,7 @@ class histoooriii extends Component {
             </Container>
           </Col>
 
-          <div class=" col-md-3" >
-              <Nav vertical className="shadow-sm bg-white full-height">
-                  <div class=" nav-item shadow p-3 rounded ">
-                    <center>
-                      <img src={require('../assets/images/food-and-restaurant.png')} alt="empty cart" />
-                    </center>
-                    <div style={{ textAlign: 'center' }}>
-                      <h6>Your cart is empty</h6>
-                      <p style={{ color: '#CECECE' }}>Please add some items from the menu</p>
-                    </div>
-                  </div>
-              </Nav>
-            </div>
+          <Rightbar/>
         </Row>
     );
   }

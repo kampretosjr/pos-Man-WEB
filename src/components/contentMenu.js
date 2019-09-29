@@ -6,10 +6,10 @@ import Swal from 'sweetalert2'
 import { connect } from 'react-redux';
 import '../assets/css/modalChart.css';
 import { postHistory } from '../redux/actions/history';
-import { cartTotalPrice, cartOperator, cartQty } from '../redux/actions/cart';
+import { cartTotalPrice, cartOperator, cartQty, cartInternal, cartInternalPlus } from '../redux/actions/cart';
 import Sidebar from "./sidebar";
 
-var cart = []
+var wik = []
 const dataStorage = JSON.parse(localStorage.getItem("data")) || ""
 
 export class Content extends Component {
@@ -17,7 +17,7 @@ export class Content extends Component {
     super(props);
     this.state = {
       modal: false,
-      stateCart: cart,
+      stateCart: wik,
       total: 0,
       allPrice: 0,
       allItem: [],
@@ -34,55 +34,57 @@ export class Content extends Component {
     return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('');
   };
 
-  increment(item) {
+  increment = async (item) => {
     var id = this.state.stateCart.indexOf(item)
-    this.setState({
-      cart: this.state.stateCart[id].quantity += 1,
+    await this.setState({
       allPrice: (this.state.allPrice - (item.price * (item.quantity - 1))) + (item.price * item.quantity)
     })
     this.props.dispatch(cartQty(+1))
+    this.props.dispatch(cartInternal("inc", id))
+    this.props.dispatch(cartTotalPrice(this.state.allPrice))
+    console.log('price inc:', await this.state.allPrice);
   }
 
-  decrement(item) {
+  decrement = async (item) => {
     var id = this.state.stateCart.indexOf(item)
-    this.setState({
-      cart: this.state.stateCart[id].quantity -= 1,
+    await this.setState({
       allPrice: (this.state.allPrice - item.price)
     })
     this.props.dispatch(cartQty(-1))
+    this.props.dispatch(cartTotalPrice(this.state.allPrice))
+    this.props.dispatch(cartInternal("dec", id))
+    console.log('price dec:', this.state.allPrice);
   }
 
   nambahKeranjang = async (item) => {
-    let index = cart.indexOf(item)
+    let index = this.state.stateCart.indexOf(item)
     if (index === -1) {
       this.props.dispatch(cartQty(+1))
-      cart.push(item)
+      this.state.stateCart.push(item)
       item.quantity = 1
       await this.setState({
-        allPrice:(this.state.allPrice + (item.quantity * item.price) )
+        allPrice: (this.state.allPrice + (item.quantity * item.price))
       })
-
-      this.props.dispatch(cartTotalPrice(this.state.allPrice))
     } else {
       this.props.dispatch(cartQty(-item.quantity))
-      cart.splice(index, 1)
+      this.state.stateCart.splice(index, 1)
       await this.setState({
-        allPrice:(this.state.allPrice - (item.quantity * item.price) )
+        allPrice: (this.state.allPrice - (item.quantity * item.price))
       })
       item.quantity = 0
     }
     console.log('all 1:', this.state.allPrice);
     this.props.dispatch(cartTotalPrice(this.state.allPrice))
-    this.props.dispatch(cartOperator(cart))
+    this.props.dispatch(cartOperator(this.state.stateCart))
   }
 
   cancel = () => {
-    cart.splice(0, [cart.length])
+    this.state.stateCart.splice(0, [this.state.stateCart.length])
     this.props.dispatch(cartQty(0))
-
+    this.props.dispatch(cartOperator("cancel"))
     this.setState({
       allPrice: 0,
-      stateCart: cart,
+      stateCart: wik,
     })
 
   }
@@ -90,7 +92,7 @@ export class Content extends Component {
   render() {
     let receiptNo = Math.floor((Math.random() * 1000000000) + 1)
     const { stateCart, qty, allPrice, total } = this.state
-    console.log('all 2:', this.state.allPrice);
+    console.log('alllllprice:', this.state.allPrice);
     const insertList = async () => {
       stateCart.map((item, key) => {
         return (
@@ -110,8 +112,8 @@ export class Content extends Component {
         .then(() => {
           Swal.fire({
             type: 'success',
-            title: 'Menu',
-            text: 'Berhasil di tambah!',
+            title: 'Trancsaction Success',
+            text: 'You can check Transaction info in history page',
           }).then(function () {
             window.location.reload();
           }
@@ -121,8 +123,8 @@ export class Content extends Component {
           console.log(error)
           Swal.fire({
             type: 'error',
-            title: 'Add Menu',
-            text: 'Failed To Add Menu'
+            title: 'Transaction Error',
+            text: 'Failed To do Transaction'
           })
         })
     }
@@ -201,66 +203,87 @@ export class Content extends Component {
         </div>
         <div>
           {/* //////////modal//////////////////////////////////////////////////////////////// */}
-          <div class="modal fade" ref={el => (this.componentRef = el)} id="myModal" role="dialog">
-            <div class="modal-dialog modal-lg">
+          <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
               <div class="modal-content">
+                <div ref={el => (this.componentRef = el)}>
+                  <div class="modal-header">
+                    <table style={{ width: '100%', }}>
+                      <tr>
+                        <th>Receipt No:</th>
+                        <th style={{ textAlign: 'right' }}>No #{receiptNo}</th>
+                      </tr>
+                      <tr>
+                        <th>Cashier :</th>
+                        <th style={{ textAlign: 'right' }}>{dataStorage.username}</th>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="modal-body">
+                    <table style={{ width: '100%' }}>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}>Item name</th>
+                        <th style={{ textAlign: 'center' }}>Item quantity</th>
+                        <th style={{ textAlign: 'right' }}>Item Price</th>
+                      </tr>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}></th>
+                        <th style={{ textAlign: 'center' }}></th>
+                        <th style={{ textAlign: 'right' }}></th>
+                      </tr>
+                      <br />
+                      {this.props.CartProps.CartList.map((item, index) => {
+                        return (
+                          <>
+                            <tr>
+                              <td style={{ textAlign: 'left' }}>{item.item_name}</td>
+                              <td style={{ textAlign: 'center' }}>{item.quantity} x</td>
+                              <td style={{ textAlign: 'right' }}>Rp. {item.price * item.quantity}</td>
+                            </tr>
+                          </>
+                        )
+                      })
+                      }
+                      <br />
+                      <tr>
+                        <td colspan='2' style={{ textAlign: 'left' }}>Before Tax</td>
+                        <td colspan='2' style={{ textAlign: 'right' }}>Rp. {this.props.CartProps.TotalPrice}</td>
+                      </tr>
+                      <tr>
+                        <td colspan='2' style={{ textAlign: 'left' }}>Ppn 10%</td>
+                        <td colspan='2' style={{ textAlign: 'right' }}>Rp. {this.props.CartProps.TotalPrice / 100 * 10}</td>
+                      </tr>
+                      <tr>
+                        <td colspan='2' style={{ textAlign: 'left' }}>Payment : Cash</td>
+                        <td colspan='2' style={{ textAlign: 'right' }}>Total : Rp. {this.props.CartProps.TotalPrice + (this.props.CartProps.TotalPrice / 100 * 10)}</td>
+                      </tr>
 
-                <div class="modal-header">
-                  <table style={{ width: '100%', border: 1 }}>
-                    <tr>
-                      <th>Receipt</th>
-                      <th style={{ textAlign: 'right' }}>No #{receiptNo}</th>
-                    </tr>
-                    <tr>
-                      <th>Cashier :</th>
-                      <th style={{ textAlign: 'right' }}>{dataStorage.username}</th>
-                    </tr>
-                  </table>
-                </div>
-                <div class="modal-body">
-                  <table style={{ width: '100%', border: 1 }}>
-                    {stateCart.map((item, index) => {
-                      return (
-                        <>
-                          <tr>
-                            <td style={{ textAlign: 'left' }}>{item.item_name}</td>
-                            <td style={{ textAlign: 'center' }}>{item.quantity} x</td>
-                            <td style={{ textAlign: 'right' }}>Rp. {item.price * item.quantity}</td>
-                          </tr>
-                        </>
-                      )
-                    })
-                    }
-                    <br />
-                    <tr>
-                      <td colspan='2' style={{ textAlign: 'left' }}>Ppn 10%</td>
-                      <td colspan='2' style={{ textAlign: 'right' }}>Rp. {allPrice / 100 * 10}</td>
-                    </tr>
-                    <tr>
-                      <td colspan='2' style={{ textAlign: 'left' }}>Payment : Cash</td>
-                      <td colspan='2' style={{ textAlign: 'right' }}>Total : Rp. {allPrice + (allPrice / 100 * 10)}</td>
-                    </tr>
-
-                  </table>
+                    </table>
+                  </div>
                 </div>
                 <div class="modal-footer">
-                  <Row style={{ paddingLeft: 40, paddingRight: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                    <Button style={{ background: "#F24F8A", borderWidth: '0', textAlign: 'center' }} onClick={() => insertList()} block>bayar</Button>{' '}
-                    <h6 >Or</h6>
-                    <ReactToPrint
-                      trigger={() => <Button style={{ background: "#57CAD5", borderWidth: '0' }} onClick={this.toggle} block>print</Button>}
-                      content={() => this.componentRef}
-                    />
-
-                  </Row>
+                  <button type="button" class="btn btn-success" onClick={() => insertList()} data-dismiss="modal">Pay</button>
+                  <button type="button" class="btn btn-primary" onClick={this.toggle}>Print</button>
                 </div>
+                {/* <div border='5' class="modal-footer">
+                  <table border='5' s>
+                    <th>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Send message</button>
+                      <td><Button style={{ background: "#F24F8A", borderWidth: '0', textAlign: 'center' }} onClick={() => insertList()} block>bayar</Button>{' '}</td>
+                      <td>
+                        <ReactToPrint
+                          trigger={() => <Button style={{ background: "#57CAD5", borderWidth: '0' }} onClick={this.toggle} block>print</Button>}
+                          content={() => this.componentRef}
+                        />
+                      </td>
+                    </th>
+                  </table>
+                </div> */}
               </div>
             </div>
           </div>
         </div>
-
-
-
       </>
     );
   }
