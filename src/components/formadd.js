@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Col, Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { connect } from 'react-redux'
 import Swal from 'sweetalert2'
 
@@ -17,6 +17,8 @@ export class Formadd extends React.Component {
             image: '',
             price: 0,
             id_category: [],
+            isLoading: false
+
         }
     }
 
@@ -62,8 +64,10 @@ export class Formadd extends React.Component {
     }
 
     addMenu(formdata) {
+        this.setState({ isLoading: true })
         this.props.dispatch(postItem(formdata))
             .then(() => {
+                this.setState({ isLoading: false })
                 Swal.fire({
                     type: 'success',
                     title: 'Menu',
@@ -75,6 +79,7 @@ export class Formadd extends React.Component {
 
             })
             .catch((error) => {
+                this.setState({ isLoading: false })
                 console.log(error)
                 Swal.fire({
                     type: 'error',
@@ -94,46 +99,50 @@ export class Formadd extends React.Component {
         console.log("id_category", this.state.id_category)
         return (
             <Form>
-                <FormGroup row>
-                    <Label for="exampleEmail" sm={2}>Name</Label>
-                    <Col sm={10}>
-                        <Input type="text" name="name" value={name} onChange={e => this.setState({ name: e.target.value })} />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="examplePassword" sm={2}>Image</Label>
-                    <Col sm={10}>
-                        <Input type="file" name="image" onChange={this.onChangeFile} />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="exampleEmail" sm={2}>Price</Label>
-                    <Col sm={10}>
-                        <Input type="number" name="price" value={price} onChange={e => this.setState({ price: e.target.valueAsNumber })} />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="exampleSelect" sm={2}>Select</Label>
-                    <Col sm={10}>
-                        <select onChange={(e) => this.setState({ id_category: e.target.value })} className="form-control" required>
-                            <option >--Pilih kategorinya--</option>
+                {this.state.isLoading ?
+                    <Spinner color="success" className="m-auto mt-5" /> :
+                    <>
+                        <FormGroup row>
+                            <Label for="exampleEmail" sm={2}>Name</Label>
+                            <Col sm={10}>
+                                <Input type="text" name="name" value={name} onChange={e => this.setState({ name: e.target.value })} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label for="examplePassword" sm={2}>Image</Label>
+                            <Col sm={10}>
+                                <Input type="file" name="image" onChange={this.onChangeFile} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label for="exampleEmail" sm={2}>Price</Label>
+                            <Col sm={10}>
+                                <Input type="number" name="price" value={price} onChange={e => this.setState({ price: e.target.valueAsNumber })} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label for="exampleSelect" sm={2}>Select</Label>
+                            <Col sm={10}>
+                                <select onChange={(e) => this.setState({ id_category: e.target.value })} className="form-control" required>
+                                    <option >--Pilih kategorinya--</option>
 
-                            {listCategory.map((listCategory, index) => {
-                                return (
-                                    <option key={index} value={listCategory.id_category}>{listCategory.category_name}</option>
-                                )
-                            })}
-                        </select >
-                    </Col>
-                </FormGroup>
-                <FormGroup check row className="mt-4">
-                    <Col>
-                        <Button className="float-right" style={{ backgroundColor: '#F24F8A', borderColor: 'transparent' }} onClick={() => this.addMenu(formdata)}>Add</Button>
-                    </Col>
-                    <Col>
-                        <Button className="float-right mr-3" style={{ backgroundColor: '#57CAD5', borderColor: 'transparent' }}>Cancel</Button>
-                    </Col>
-                </FormGroup>
+                                    {listCategory.map((listCategory, index) => {
+                                        return (
+                                            <option key={index} value={listCategory.id_category}>{listCategory.category_name}</option>
+                                        )
+                                    })}
+                                </select >
+                            </Col>
+                        </FormGroup>
+                        <FormGroup check row className="mt-4">
+                            <Col>
+                                <Button className="float-right" style={{ backgroundColor: '#F24F8A', borderColor: 'transparent' }} onClick={() => this.addMenu(formdata)}>Add</Button>
+                            </Col>
+                            <Col>
+                                <Button className="float-right mr-3" style={{ backgroundColor: '#57CAD5', borderColor: 'transparent' }}>Cancel</Button>
+                            </Col>
+                        </FormGroup>
+                    </>}
             </Form>
         );
     }

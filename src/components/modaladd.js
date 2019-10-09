@@ -7,7 +7,7 @@ class Modaladd extends React.Component {
         return (
             <div>
                 <Modal isOpen={this.props.modal} toggle={this.props.toggle} className={this.props.className} centered>
-                    <ModalHeader toggle={this.props.toggle}>Modal title</ModalHeader>
+                    <ModalHeader toggle={this.props.toggle}>Add Item</ModalHeader>
                     <ModalBody>
                         <Formadd />
                     </ModalBody>
