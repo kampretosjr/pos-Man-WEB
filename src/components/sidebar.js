@@ -18,26 +18,53 @@ export class sidebar extends Component {
   }
 
   LogoutHandler = async (id) => {
-    await this.props.dispatch(logoutUser(id))
-      .then(() => {
-        Swal.fire({
-          type: 'success',
-          title: 'Logout',
-          text: 'Logout Success!'
-        }).then(function () {
-          window.location.reload();
+    if (this.props.CartProps.CartList.length != 0) {
+      Swal.fire({
+        title: 'Yakin mau log out?',
+        text: "Masih ada pesanan di keranjang tuh",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, mau log out !',
+        cancelButtonText: 'Ga jadi!',
+      }).then((result) => {
+        if (result.value) {
+          this.props.dispatch(logoutUser(id))
+            .then(() => {
+              Swal.fire({
+                type: 'success',
+                title: 'bye',
+                text: 'Logout Success!'
+              }).then(function () {
+                window.location.reload();
+              }
+              );
+            })
         }
-        );
       })
-      .catch((error) => {
-        console.log(error)
-        Swal.fire({
-          type: 'error',
-          title: 'Logout',
-          text: 'Logout Failed :('
+    } else {
+      await this.props.dispatch(logoutUser(id))
+        .then(() => {
+          Swal.fire({
+            type: 'success',
+            title: 'Logout',
+            text: 'Logout Success!'
+          }).then(function () {
+            window.location.reload();
+          }
+          );
         })
-      })
+        .catch((error) => {
+          console.log(error)
+          Swal.fire({
+            type: 'error',
+            title: 'Logout',
+            text: 'Logout Failed :('
+          })
+        })
     }
+  }
 
   toggle() {
     this.setState(prevState => ({
@@ -46,6 +73,7 @@ export class sidebar extends Component {
   }
 
   render() {
+    console.log('this.props', this.props.CartList)
     return (
       <>
         <div class="col-md-1 " style={{ position: "fixed", left: 0 }}>
@@ -86,5 +114,9 @@ export class sidebar extends Component {
 }
 
 
-
-export default connect()(sidebar);
+const mapStateToProps = state => {
+  return {
+    CartProps: state.reCart
+  }
+}
+export default connect(mapStateToProps)(sidebar);

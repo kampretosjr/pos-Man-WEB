@@ -136,10 +136,12 @@ export class Formadd extends React.Component {
                         </FormGroup>
                         <FormGroup check row className="mt-4">
                             <Col>
-                                <Button className="float-right" style={{ backgroundColor: '#F24F8A', borderColor: 'transparent' }} onClick={() => this.addMenu(formdata)}>Add</Button>
+                                {/* <Button type="submit" className="float-right" style={{ backgroundColor: '#F24F8A', borderColor: 'transparent' }} onClick={() => this.addMenu(formdata)}>Add</Button> */}
+                                <Button type="submit" className="float-right" color="success" onClick={() => this.addMenu(formdata)}>Add</Button>
                             </Col>
+                            
                             <Col>
-                                <Button className="float-right mr-3" style={{ backgroundColor: '#57CAD5', borderColor: 'transparent' }}>Cancel</Button>
+                                <Button type="reset" className="float-right mr-3" color="danger">Reset</Button>
                             </Col>
                         </FormGroup>
                     </>}

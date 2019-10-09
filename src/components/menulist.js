@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardImg, CardBody, Container, CardSubtitle, Row, Col, Spinner } from 'reactstrap';
+import { Card, CardImg, CardBody, CardSubtitle, Row, Col, Spinner } from 'reactstrap';
 import { connect } from 'react-redux'
 import { getAllItem } from '../redux/actions/item'
 
@@ -28,7 +28,7 @@ export class Menulist extends Component {
 		this.props.dispatch(getAllItem())
 			.then(() => {
 				this.setState({
-					menus: this.props.menu,
+					menus: this.props.menu.itemList,
 					isLoading: false
 				})
 			})
@@ -38,31 +38,34 @@ export class Menulist extends Component {
 	}
 
 	render() {
+		console.log('user', this.props.user)
 		const { menus, isLoading } = this.state
 		return (
 			<div class="col-md-8" style={{ marginLeft: "8.25%" }}>
-					<Row>
-						{isLoading ?
-							<Spinner color="success" className="m-auto mt-5" /> :
-							menus && menus.length > 0 ?
-								menus.map((item, key) => {
-									return (
-										<Col data-toggle="tooltip" data-placement="top" title={item.id_item} md="4" key={key}>
-											<Card onClick={() => this.props.addCart(item)} className="mt-1 mb-auto" style={{ backgroundColor: 'transparent', borderColor: 'transparent', cursor: 'pointer' }}>
-												<CardImg top width="100%" height="170" src={item.item_image} alt="Card image cap" />
-												<CardBody>
-													<h4>{item.item_name}</h4>
-													<h6>{item.category_name}</h6>
-													<CardSubtitle style={{ fontWeight: 'bold' }}>{this.angkaRP(item.price)}</CardSubtitle>
-												</CardBody>
-											</Card>
-										</Col>
-									)
-								})
-								:
-								<p>oops no data!</p>
-						}
-					</Row>
+				<Row>
+					{this.props.menu.isLoading || this.props.user.isLoading ?
+						<Spinner color="success" className="m-auto mt-5" /> :
+						menus && menus.length > 0 ?
+							menus.map((item, key) => {
+								return (
+									<Col data-toggle="tooltip" data-placement="top" title={item.id_item} md="4" key={key}>
+										<Card 	onClick={() => this.props.addCart(item)}
+												className="mt-1 mb-auto" 
+												style={{ backgroundColor: 'transparent', borderColor: 'transparent', cursor: 'pointer' }}>
+											<CardImg top width="100%" height="170" src={item.item_image} alt="Card image cap" />
+											<CardBody>
+												<h4>{item.item_name}</h4>
+												<h6>{item.category_name}</h6>
+												<CardSubtitle style={{ fontWeight: 'bold' }}>{this.angkaRP(item.price)}</CardSubtitle>
+											</CardBody>
+										</Card>
+									</Col>
+								)
+							})
+							:
+							<p>oops no data!</p>
+					}
+				</Row>
 			</div>
 		)
 
@@ -75,7 +78,8 @@ export class Menulist extends Component {
 
 const mapStateToProps = state => {
 	return {
-		menu: state.reItem.itemList
+		menu: state.reItem,
+		user: state.reUser
 	}
 }
 
