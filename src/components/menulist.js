@@ -41,7 +41,6 @@ export class Menulist extends Component {
 		const { menus, isLoading } = this.state
 		return (
 			<div class="col-md-8" style={{ marginLeft: "8.25%" }}>
-				<Container >
 					<Row>
 						{isLoading ?
 							<Spinner color="success" className="m-auto mt-5" /> :
@@ -64,7 +63,6 @@ export class Menulist extends Component {
 								<p>oops no data!</p>
 						}
 					</Row>
-				</Container>
 			</div>
 		)
 

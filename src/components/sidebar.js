@@ -48,7 +48,7 @@ export class sidebar extends Component {
   render() {
     return (
       <>
-        <div class="col-md-1  " style={{ position: "fixed", left: 0 }}>
+        <div class="col-md-1 " style={{ position: "fixed", left: 0 }}>
           <ul class="nav flex-column navbar-light bg-white shadow p-3 mb-5 rounded " style={{ height: "100%" }} >
             <li data-toggle="tooltip" title="add menu" onClick={this.toggle} >
               <a className="nav-link" >

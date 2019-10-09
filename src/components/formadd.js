@@ -62,36 +62,36 @@ export class Formadd extends React.Component {
     }
 
     addMenu(formdata) {
-			this.props.dispatch(postItem(formdata))
-				.then(() => {
-						Swal.fire({
-							type: 'success',
-							title: 'Menu',
-							text: 'Berhasil di tambah!',
-						}).then(function(){ 
-                        window.location.reload();
-                            }
-						);
-						
-				})
-				.catch((error) => {
-					console.log(error)
-						Swal.fire({	
-							type: 'error',
-							title: 'Add Menu',
-							text: 'Failed To Add Menu'
-						})
-					})
-    	}
+        this.props.dispatch(postItem(formdata))
+            .then(() => {
+                Swal.fire({
+                    type: 'success',
+                    title: 'Menu',
+                    text: 'Berhasil di tambah!',
+                }).then(function () {
+                    window.location.reload();
+                }
+                );
+
+            })
+            .catch((error) => {
+                console.log(error)
+                Swal.fire({
+                    type: 'error',
+                    title: 'Add Menu',
+                    text: 'Failed To Add Menu'
+                })
+            })
+    }
 
     render() {
         const { listCategory, name, image, price, id_category } = this.state
         let formdata = new FormData
-                formdata.append('item_name', name)
-                formdata.append('item_image', image)
-                formdata.append('price', price)
-				formdata.append('id_category', id_category)
-				console.log("id_category",this.state.id_category)
+        formdata.append('item_name', name)
+        formdata.append('item_image', image)
+        formdata.append('price', price)
+        formdata.append('id_category', id_category)
+        console.log("id_category", this.state.id_category)
         return (
             <Form>
                 <FormGroup row>
@@ -115,15 +115,15 @@ export class Formadd extends React.Component {
                 <FormGroup row>
                     <Label for="exampleSelect" sm={2}>Select</Label>
                     <Col sm={10}>
-										<select  onChange = {(e)=>this.setState({id_category:e.target.value})} className="form-control" required>
-											<option >--Pilih kategorinya--</option>
-											
-												{listCategory.map((listCategory, index) =>{
-													return(
-															<option key ={index} value={listCategory.id_category}>{listCategory.category_name}</option>
-															)
-													})}
-											</select >
+                        <select onChange={(e) => this.setState({ id_category: e.target.value })} className="form-control" required>
+                            <option >--Pilih kategorinya--</option>
+
+                            {listCategory.map((listCategory, index) => {
+                                return (
+                                    <option key={index} value={listCategory.id_category}>{listCategory.category_name}</option>
+                                )
+                            })}
+                        </select >
                     </Col>
                 </FormGroup>
                 <FormGroup check row className="mt-4">
